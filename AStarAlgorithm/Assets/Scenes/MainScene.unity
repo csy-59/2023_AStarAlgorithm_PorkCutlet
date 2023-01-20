@@ -335,6 +335,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 5386352696099189664, guid: f9a75a2565fa43d42b6d05a5ff224b18, type: 3}
   tileWidth: 1
   tileHeight: 1
+  playPrefab: {fileID: 5874682586334228540, guid: a2bd39bcb2a14494189bb63d2c767160, type: 3}
 --- !u!4 &1244770788
 Transform:
   m_ObjectHideFlags: 0
