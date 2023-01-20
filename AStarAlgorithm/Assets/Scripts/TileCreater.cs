@@ -9,6 +9,16 @@ public class TileCreater : MonoBehaviour
     {
         public int X { get; set; }
         public int Y { get; set; }
+
+        public static bool operator==(NodeIndex a, NodeIndex b)
+        {
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        public static bool operator!=(NodeIndex a, NodeIndex b)
+        {
+            return a.X != b.X || a.Y != b.Y;
+        }
     }
 
     [Header("==전체 타일 맵==")]
