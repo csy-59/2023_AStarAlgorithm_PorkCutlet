@@ -13,6 +13,9 @@ public class TileCreater : MonoBehaviour
     [SerializeField] private float tileWidth = 1f;
     [SerializeField] private float tileHeight = 1f;
 
+    [Header("\n==플레이어 정보==")]
+    [SerializeField] private GameObject playPrefab;
+
     private List<List<GameObject>> tiles = new List<List<GameObject>>();
 
     public void Awake()
@@ -31,5 +34,8 @@ public class TileCreater : MonoBehaviour
                 tiles[i].Add(newTile);
             }
         }
+
+        Instantiate(playPrefab, new Vector3(tileWidth * widthCount / 2, 0f, tileHeight * heightCount / 2), 
+            Quaternion.identity, Map.transform);
     }
 }
