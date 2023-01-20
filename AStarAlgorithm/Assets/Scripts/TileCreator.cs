@@ -141,4 +141,15 @@ public class TileCreator : MonoBehaviour
     {
         tiles[node.X][node.Y].Renderer.material.color = Color.blue;
     }
+
+    public void ResetMap()
+    {
+        foreach(var i in Tiles)
+        {
+            foreach(var j in i)
+            {
+                j.ReturnToNormal();
+            }
+        }
+    }
 }

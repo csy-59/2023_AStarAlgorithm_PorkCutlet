@@ -128,7 +128,7 @@ public class MousePointToMove : MonoBehaviour
             // 0. 열린 목록에서 자신을 빼서, 닫힌 노드로 이동
             NodeIndex curIndex = openList[^1];
             Node curNode = Nodes[curIndex.X][curIndex.Y];
-            //tileCreater.PaintPossibleTile(curIndex);
+            tileCreator.PaintPossibleTile(curIndex);
             openList.RemoveAt(openList.Count - 1);
             closedList.Add(curIndex);
             // 현재 노드가 목표 노드라면 멈춤
@@ -205,7 +205,7 @@ public class MousePointToMove : MonoBehaviour
         do {
             Route.Push(nextNodeToMove);
             routeString += nextNodeToMove.ToString() + ">>";
-            //tileCreater.PaintRouteTile(nextNodeToMove);
+            tileCreator.PaintRouteTile(nextNodeToMove);
             nextNodeToMove = Nodes[nextNodeToMove.X][nextNodeToMove.Y].Parent;
         } while (nextNodeToMove != start);
         routeString += start.ToString();
@@ -279,5 +279,7 @@ public class MousePointToMove : MonoBehaviour
                 isVisited[i][j] = false;
             }
         }
+
+        tileCreator.ResetMap();
     }
 }

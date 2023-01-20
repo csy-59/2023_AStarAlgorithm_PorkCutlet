@@ -23,6 +23,18 @@ public class TileNode : MonoBehaviour
         }
     }
 
+    public void ReturnToNormal()
+    {
+        if (IsBlocked)
+        {
+            myRenderer.material.color = blockMaterail.color;
+        }
+        else
+        {
+            myRenderer.material.color = normalMaterial.color;
+        }
+    }
+
     public void Awake()
     {
         IsBlocked = Random.Range(0, 100) < blockRate;
