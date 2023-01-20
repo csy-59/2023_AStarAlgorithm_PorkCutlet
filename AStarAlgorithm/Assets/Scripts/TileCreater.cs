@@ -9,6 +9,27 @@ public class TileCreater : MonoBehaviour
     {
         public int X { get; set; }
         public int Y { get; set; }
+
+        public NodeIndex(int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+        }
+
+        public static bool operator==(NodeIndex a, NodeIndex b)
+        {
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        public static bool operator!=(NodeIndex a, NodeIndex b)
+        {
+            return a.X != b.X || a.Y != b.Y;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[{0}, {1}]", X, Y);
+        }
     }
 
     [Header("==¿¸√º ≈∏¿œ ∏ ==")]
@@ -69,11 +90,21 @@ public class TileCreater : MonoBehaviour
             throw outOfRangeException;
         }
 
-        tiles[xPosition][zPosition].GetComponent<MeshRenderer>().material.color = Color.white;
+        tiles[xPosition][zPosition].Renderer.material.color = Color.white;
 
         returnIndex.X = xPosition;
         returnIndex.Y = zPosition;
 
         return returnIndex;
+    }
+
+    public void PaintRouteTile(NodeIndex node)
+    {
+        tiles[node.X][node.Y].Renderer.material.color = Color.red;
+    }
+
+    public void PaintPossibleTile(NodeIndex node)
+    {
+        tiles[node.X][node.Y].Renderer.material.color = Color.blue;
     }
 }

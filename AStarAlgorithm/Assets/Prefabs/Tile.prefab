@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 5386352696099189664}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -112,5 +112,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myRenderer: {fileID: 7541782488402534027}
+  blockRate: 20
   normalMaterial: {fileID: 2100000, guid: 10d7ef44e2a75a64bbfbbe583c3f0b9b, type: 2}
   blockMaterail: {fileID: 2100000, guid: 0864856f263d18b4690cceb8f78b3615, type: 2}

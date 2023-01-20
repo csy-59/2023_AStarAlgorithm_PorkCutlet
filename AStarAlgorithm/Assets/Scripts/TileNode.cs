@@ -5,6 +5,7 @@ using UnityEngine;
 public class TileNode : MonoBehaviour
 {
     [SerializeField] private MeshRenderer myRenderer;
+    public MeshRenderer Renderer => myRenderer;
     [Header("==È®·ü==")]
     [SerializeField] [Range(0, 100)] private float blockRate = 20;
 
