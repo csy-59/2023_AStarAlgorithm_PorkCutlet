@@ -17,7 +17,6 @@ public class TileNode : MonoBehaviour
     public void Awake()
     {
         IsBlocked = Random.Range(0, 100) < blockRate;
-        Debug.Log(IsBlocked);
         if (IsBlocked)
         {
             myRenderer.material.color = blockMaterail.color;
