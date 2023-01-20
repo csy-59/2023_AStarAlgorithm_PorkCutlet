@@ -13,6 +13,6 @@ public class PlayerSencer : MonoBehaviour
     public void Start()
     {
 
-        Debug.Log(tileCreater.GetTileIndex(transform.localPosition));
+        //Debug.Log(tileCreater.GetTileIndex(transform.localPosition));
     }
 }
