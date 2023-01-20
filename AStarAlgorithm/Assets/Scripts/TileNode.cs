@@ -14,6 +14,14 @@ public class TileNode : MonoBehaviour
 
     public bool IsBlocked { get; private set; }
 
+    public void SetToNormalTile()
+    {
+        if(IsBlocked)
+        {
+            myRenderer.material.color = normalMaterial.color;
+        }
+    }
+
     public void Awake()
     {
         IsBlocked = Random.Range(0, 100) < blockRate;

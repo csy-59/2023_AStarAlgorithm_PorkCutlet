@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PlayerSencer : MonoBehaviour
 {
-    public TileCreater TileCreater { get; set; }
+    private TileCreater tileCreater;
 
     public void Awake()
     {
-        Debug.Log(TileCreater.GetTileIndex(transform.localPosition));
+        tileCreater = GetComponentInParent<TileCreater>();
+    }
+    public void Start()
+    {
+
+        Debug.Log(tileCreater.GetTileIndex(transform.localPosition));
     }
 }
