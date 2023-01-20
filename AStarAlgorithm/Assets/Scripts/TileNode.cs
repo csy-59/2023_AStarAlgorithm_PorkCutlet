@@ -5,6 +5,8 @@ using UnityEngine;
 public class TileNode : MonoBehaviour
 {
     [SerializeField] private MeshRenderer myRenderer;
+    [Header("==확률==")]
+    [SerializeField] [Range(0, 100)] private float blockRate = 20;
 
     [Header("==메테리얼 색 변환==")]
     [SerializeField] private Material normalMaterial;
@@ -14,7 +16,7 @@ public class TileNode : MonoBehaviour
 
     public void Awake()
     {
-        IsBlocked = Random.Range(0, 2) % 2 == 0;
+        IsBlocked = Random.Range(0, 100) < blockRate;
         Debug.Log(IsBlocked);
         if (IsBlocked)
         {
