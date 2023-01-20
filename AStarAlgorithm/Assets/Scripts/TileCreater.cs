@@ -74,6 +74,7 @@ public class TileCreater : MonoBehaviour
         GameObject player = Instantiate(playPrefab, 
             new Vector3(tileWidth * widthCount / 2, 0f, tileHeight * heightCount / 2), 
             Quaternion.identity);
+        player.GetComponent<PlayerMovement>().TileCreater = this;
         PlayerTransform = player.transform;
 
     }
@@ -90,12 +91,17 @@ public class TileCreater : MonoBehaviour
             throw outOfRangeException;
         }
 
-        tiles[xPosition][zPosition].Renderer.material.color = Color.white;
+        //tiles[xPosition][zPosition].Renderer.material.color = Color.white;
 
         returnIndex.X = xPosition;
         returnIndex.Y = zPosition;
 
         return returnIndex;
+    }
+
+    public Vector3 GetTilePosition(NodeIndex index)
+    {
+        return Tiles[index.X][index.Y].transform.position;
     }
 
     public void PaintRouteTile(NodeIndex node)

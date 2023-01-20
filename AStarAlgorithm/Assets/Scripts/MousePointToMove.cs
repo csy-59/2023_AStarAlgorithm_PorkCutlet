@@ -6,6 +6,19 @@ using NodeIndex = TileCreater.NodeIndex;
 
 public class MousePointToMove : MonoBehaviour
 {
+    private enum ReachableCheckBits
+    {
+        Top = 0b1000,
+        Bottom = 0b0100,
+        Left = 0b0010,
+        Right = 0b0001,
+
+        LeftTop = 0b1010,
+        RightTop = 0b1001,
+        LeftBottom = 0b0110,
+        RightBottm = 0b0101,
+    }
+
     public class Node
     {
         public int TotalCost => FromStart + ToEnd;
@@ -18,6 +31,7 @@ public class MousePointToMove : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private TileCreater tileCreater;
     private Transform playerTransform;
+    private PlayerMovement playerMovemnt;
     private float cameraHeight;
 
     // 사용할 배열들
@@ -25,9 +39,13 @@ public class MousePointToMove : MonoBehaviour
     private bool[][] isVisited;
     private int width, height;
 
+    public Stack<NodeIndex> Route { get; private set; } = new Stack<NodeIndex>();
+
     public void Start()
     {
         playerTransform = tileCreater.PlayerTransform;
+        playerMovemnt = playerTransform.GetComponent<PlayerMovement>();
+        playerMovemnt.MouseToMove = this;
         cameraHeight = mainCamera.transform.position.y;
 
         width = tileCreater.Width;
@@ -67,7 +85,14 @@ public class MousePointToMove : MonoBehaviour
                 if(!SearchAStar(startIndex, targetIndex))
                 {
                     Debug.Log($"도달 할 수 없음");
+                    return;
                 }
+
+                if(playerMovemnt.IsMoving)
+                {
+                    playerMovemnt.StopMoving();
+                }
+                playerMovemnt.StartMoving();
             }
             catch (IndexOutOfRangeException e)
             {
@@ -109,45 +134,45 @@ public class MousePointToMove : MonoBehaviour
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y),
                 curIndex, weight, in end, ref openList, in closedList))
             {
-                diagonalBits |= 0b1000;
+                diagonalBits |= (byte) ReachableCheckBits.Top;
             }
             // 아래
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X + 1, curIndex.Y),
                 curIndex, weight, in end, ref openList, in closedList))
             {
-                diagonalBits |= 0b0100;
+                diagonalBits |= (byte)ReachableCheckBits.Bottom;
             }
             //왼쪽
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X, curIndex.Y - 1),
                 curIndex, weight, in end, ref openList, in closedList))
             {
-                diagonalBits |= 0b0010;
+                diagonalBits |= (byte)ReachableCheckBits.Left;
             }
             //오른쪽
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X, curIndex.Y + 1),
                 curIndex, weight, in end, ref openList, in closedList))
             {
-                diagonalBits |= 0b0001;
+                diagonalBits |= (byte)ReachableCheckBits.Right;
             }
 
             weight = curNode.FromStart + 14;
             // 2. 갈 수 있는 노드는 열린 목록에 추가,
-            if ((diagonalBits & 0b1010) == 0) // 왼쪽 위
+            if ((diagonalBits & (byte)ReachableCheckBits.LeftTop) == 0) // 왼쪽 위
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y - 1),
                 curIndex, weight, in end, ref openList, in closedList);
             }
-            if ((diagonalBits & 0b1001) == 0) // 오른쪽 위
+            if ((diagonalBits & (byte)ReachableCheckBits.RightTop) == 0) // 오른쪽 위
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y + 1),
                 curIndex, weight, in end, ref openList, in closedList);
             }
-            if ((diagonalBits & 0b0110) == 0) // 왼쪽 아래
+            if ((diagonalBits & (byte)ReachableCheckBits.LeftBottom) == 0) // 왼쪽 아래
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X + 1, curIndex.Y - 1),
                 curIndex, weight, in end, ref openList, in closedList);
             }
-            if ((diagonalBits & 0b0101) == 0) // 오른쪽 아래
+            if ((diagonalBits & (byte)ReachableCheckBits.RightBottm) == 0) // 오른쪽 아래
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X + 1, curIndex.Y + 1),
                 curIndex, weight, in end, ref openList, in closedList);
@@ -164,11 +189,13 @@ public class MousePointToMove : MonoBehaviour
         }
 
         // 4. 닫힌 노드의 부모 노드를 추적하여 찾아간다.
+        Route.Clear();
         string routeString = string.Empty;
         NodeIndex nextNodeToMove = closedList[^1];
         do {
+            Route.Push(nextNodeToMove);
             routeString += nextNodeToMove.ToString() + ">>";
-            tileCreater.PaintRouteTile(nextNodeToMove);
+            //tileCreater.PaintRouteTile(nextNodeToMove);
             nextNodeToMove = Nodes[nextNodeToMove.X][nextNodeToMove.Y].Parent;
         } while (nextNodeToMove != start);
         routeString += start.ToString();
