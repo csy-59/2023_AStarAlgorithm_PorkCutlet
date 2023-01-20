@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NodeIndex = TileCreater.NodeIndex;
+using NodeIndex = TileCreator.NodeIndex;
 
 public class MousePointToMove : MonoBehaviour
 {
@@ -26,30 +26,40 @@ public class MousePointToMove : MonoBehaviour
         public int ToEnd { get; set; }
         public NodeIndex Parent { get; set; }
     }
-    private readonly int[] SearchNode = { -1, 0, 1};
 
+    [Header("===카메라===")]
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private TileCreater tileCreater;
-    private Transform playerTransform;
-    private PlayerMovement playerMovemnt;
     private float cameraHeight;
 
+    [Header("===타일===")]
+    [SerializeField] private TileCreator tileCreator;
+
+    // 플레이어
+    private Transform playerTransform;
+    private PlayerMovement playerMovemnt;
+
     // 사용할 배열들
-    public Node[][] Nodes { get; set; }
+    /// <summary>
+    /// 목표 지점까지 이동하기 위한 과정 노드들이 저장되는 스택
+    /// </summary>
+    public Stack<NodeIndex> Route { get; private set; } = new Stack<NodeIndex>();
+    /// <summary>
+    /// 노드의 정보가 저장되어 있는
+    /// </summary>
+    private Node[][] Nodes { get; set; }
     private bool[][] isVisited;
     private int width, height;
 
-    public Stack<NodeIndex> Route { get; private set; } = new Stack<NodeIndex>();
 
     public void Start()
     {
-        playerTransform = tileCreater.PlayerTransform;
+        playerTransform = tileCreator.PlayerTransform;
         playerMovemnt = playerTransform.GetComponent<PlayerMovement>();
         playerMovemnt.MouseToMove = this;
         cameraHeight = mainCamera.transform.position.y;
 
-        width = tileCreater.Width;
-        height = tileCreater.Width;
+        width = tileCreator.Width;
+        height = tileCreator.Width;
 
         Nodes = new Node[width][];
         isVisited = new bool[width][];
@@ -71,14 +81,14 @@ public class MousePointToMove : MonoBehaviour
             try
             {
                 Vector3 point = mainCamera.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * cameraHeight);
-                NodeIndex targetIndex = tileCreater.GetTileIndex(point);
+                NodeIndex targetIndex = tileCreator.GetTileIndex(point);
 
-                if (tileCreater.Tiles[targetIndex.X][targetIndex.Y].IsBlocked)
+                if (tileCreator.Tiles[targetIndex.X][targetIndex.Y].IsBlocked)
                 {
                     Debug.Log("도달 할 수 없음");
                     return;
                 }
-                NodeIndex startIndex = tileCreater.GetTileIndex(playerTransform.position);
+                NodeIndex startIndex = tileCreator.GetTileIndex(playerTransform.position);
 
                 Debug.Log($"시작 지점: {startIndex} 목표 지점: {targetIndex}");
 
@@ -215,7 +225,7 @@ public class MousePointToMove : MonoBehaviour
         }
 
         // 벽임
-        if(tileCreater.Tiles[newNode.X][newNode.Y].IsBlocked)
+        if(tileCreator.Tiles[newNode.X][newNode.Y].IsBlocked)
         {
             return false;
         }

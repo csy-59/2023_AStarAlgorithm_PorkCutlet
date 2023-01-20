@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NodeIndex = TileCreater.NodeIndex;
+using NodeIndex = TileCreator.NodeIndex;
 
 public class PlayerMovement : MonoBehaviour
 {
     public MousePointToMove MouseToMove { get; set; }
-    public TileCreater TileCreater { get; set; }
+    public TileCreator TileCreator { get; set; }
     public bool IsMoving { get; private set; }
     private Coroutine moveToTile;
 
@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator CoMoveToTile()
     {
         NodeIndex nextTileIndex = MouseToMove.Route.Pop();
-        Vector3 nextTilePosition = TileCreater.GetTilePosition(nextTileIndex);
+        Vector3 nextTilePosition = TileCreator.GetTilePosition(nextTileIndex);
 
         float elapsedTime = 0f;
         Vector3 originalPosition = transform.position;
