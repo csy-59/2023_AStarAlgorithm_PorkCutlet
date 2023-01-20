@@ -2,17 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NodeIndex = TileCreater.NodeIndex;
 
 public class MousePointToMove : MonoBehaviour
 {
-    private class EndNotReachable : System.Exception
-    {
-        private const string massage = "시작 지점과 목표 지점이 이어지지 않음";
-        public override string ToString()
-        {
-            return massage;
-        }
-    }
 
     public struct Node
     {
@@ -33,9 +26,6 @@ public class MousePointToMove : MonoBehaviour
     private int mapSize;
     private int width, height;
 
-    private readonly EndNotReachable endIsBlock = new EndNotReachable(true);
-    private readonly EndNotReachable endNotReachablek = new EndNotReachable(false);
-
     public void Start()
     {
         playerTransform = tileCreater.PlayerTransform;
@@ -55,12 +45,12 @@ public class MousePointToMove : MonoBehaviour
         {
             try
             {
-                var startIndex = tileCreater.GetTileIndex(playerTransform.position);
+                NodeIndex startIndex = tileCreater.GetTileIndex(playerTransform.position);
 
                 Vector3 point = mainCamera.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * cameraHeight);
-                var targetIndex = tileCreater.GetTileIndex(point);
+                NodeIndex targetIndex = tileCreater.GetTileIndex(point);
 
-                if(tileCreater.Tiles[targetIndex.Item1][targetIndex.Item2].IsBlocked)
+                if(tileCreater.Tiles[targetIndex.X][targetIndex.Y].IsBlocked)
                 {
                     Debug.Log("도달 할 수 없음");
                     return;
@@ -78,23 +68,23 @@ public class MousePointToMove : MonoBehaviour
 
     private bool SearchAStar(int start, int end)
     {
-        ResetMap();
-        Queue<int> queue = new Queue<int>();
-        queue.Enqueue(start);
+        //ResetMap();
+        //Queue<int> queue = new Queue<int>();
+        //queue.Enqueue(start);
 
-        int def = 0;
-        bool foundEnd = false;
-        while(queue.Count > 0)
-        {
-            int currentIndex = queue.Dequeue();
-            Nodes[currentIndex].FromStart = def;
+        //int def = 0;
+        //bool foundEnd = false;
+        //while(queue.Count > 0)
+        //{
+        //    int currentIndex = queue.Dequeue();
+        //    Nodes[currentIndex].FromStart = def;
 
-            // 시작 지점에서 끝 지점까지 도달했는지 확인
-            foundEnd = currentIndex == end;
-        }
+        //    // 시작 지점에서 끝 지점까지 도달했는지 확인
+        //    foundEnd = currentIndex == end;
+        //}
 
-        if (!foundEnd)
-            throw endNotReachable;
+        //if (!foundEnd)
+        //    throw endNotReachable;
 
         return true;
     }
