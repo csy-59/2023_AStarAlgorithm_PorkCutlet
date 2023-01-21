@@ -25,21 +25,19 @@ public class PlayerMovement : MonoBehaviour
         NodeIndex nextTileIndex = MouseToMove.Route.Pop();
         Vector3 nextTilePosition = TileCreator.GetTilePosition(nextTileIndex);
 
-        float elapsedTime = 0f;
         Vector3 originalPosition = transform.position;
-        Vector3 currentPosition = originalPosition;
+        Vector3 offsetPosition = originalPosition;
 
         while (true)
         {
-            elapsedTime += Time.deltaTime * speed;
-            currentPosition = Vector3.Lerp(originalPosition, nextTilePosition, elapsedTime);
+            offsetPosition = Time.deltaTime * speed * (nextTilePosition - originalPosition).normalized;
 
-            if ((nextTilePosition - currentPosition).sqrMagnitude < 0.001f)
+            if ((nextTilePosition - offsetPosition - transform.position).sqrMagnitude < 0.001f)
             {
-                transform.Translate(nextTilePosition - transform.position);
+                transform.position = nextTilePosition;
                 break;
             }
-            transform.Translate(currentPosition - transform.position);
+            transform.Translate(offsetPosition);
 
             yield return null;
         }
