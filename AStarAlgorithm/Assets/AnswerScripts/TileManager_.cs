@@ -139,7 +139,12 @@ public class TileManager_ : MonoBehaviour
             }
 
             // 일케 쓰면 안됨.
-            tiles.Where( _=> _.IsOpen).OrderBy(_ => _.F); // 정렬하는 것
+            var openTiles = tiles.Where(_ => _.IsOpen);
+            if (openTiles.Count() > 0)
+            {
+                int f = openTiles.Min(_ => _.F); // 정렬하는 것
+                //openTiles.Find(_ => _.F);
+            }
             startTile = tiles.Find(_ => _.IsOpen == true); // 오픈된 노드가 없다면 null이 들어감
 
         } while (startTile != null);
