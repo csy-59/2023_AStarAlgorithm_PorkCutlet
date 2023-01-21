@@ -125,20 +125,24 @@ public class MousePointToMove : MonoBehaviour
             // (1) end 노드를 찾음
             // (2) 열린 목록을 비게되는 경우 >> 이경우 노달 할 수 없음
 
-            // 0. 열린 목록에서 자신을 빼서, 닫힌 노드로 이동
             NodeIndex curIndex = openList[^1];
             Node curNode = Nodes[curIndex.X][curIndex.Y];
+
+            // 디버그용 색칠하기
             tileCreator.PaintPossibleTile(curIndex);
+            
+            // 0. 열린 목록에서 자신을 빼서, 닫힌 노드로 이동
             openList.RemoveAt(openList.Count - 1);
             closedList.Add(curIndex);
+
             // 현재 노드가 목표 노드라면 멈춤
             if (curIndex == end)
             {
                 break;
             }
 
-            byte diagonalBits = 0b0000;
             // 1. 위 아래 양옆 벽 검사 => 벽이면 그 주변 노드 못가게
+            byte diagonalBits = 0b0000;
             int weight = curNode.FromStart + 10;
             // 위
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y),
@@ -203,11 +207,15 @@ public class MousePointToMove : MonoBehaviour
         string routeString = string.Empty;
         NodeIndex nextNodeToMove = closedList[^1];
         do {
+
             Route.Push(nextNodeToMove);
             routeString += nextNodeToMove.ToString() + ">>";
+            
             tileCreator.PaintRouteTile(nextNodeToMove);
+            
             nextNodeToMove = Nodes[nextNodeToMove.X][nextNodeToMove.Y].Parent;
         } while (nextNodeToMove != start);
+
         routeString += start.ToString();
         Debug.Log(routeString);
 
