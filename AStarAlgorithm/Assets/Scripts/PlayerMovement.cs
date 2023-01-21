@@ -18,8 +18,6 @@ public class PlayerMovement : MonoBehaviour
         moveToTile = StartCoroutine(CoMoveToTile());
     }
 
-
-
     private IEnumerator CoMoveToTile()
     {
         NodeIndex nextTileIndex = MouseToMove.Route.Pop();
