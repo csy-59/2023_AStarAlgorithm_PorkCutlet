@@ -115,7 +115,7 @@ public class MousePointToMove : MonoBehaviour
     {
         ResetMap();
         List<NodeIndex> openList = new List<NodeIndex>();
-        List<NodeIndex> closedList = new List<NodeIndex>();
+        NodeIndex lastClosedNode = start;
 
         isVisited[start.X][start.Y] = true;
         openList.Add(start);
@@ -133,7 +133,7 @@ public class MousePointToMove : MonoBehaviour
             
             // 0. 열린 목록에서 자신을 빼서, 닫힌 노드로 이동
             openList.RemoveAt(openList.Count - 1);
-            closedList.Add(curIndex);
+            lastClosedNode = curIndex;
 
             // 현재 노드가 목표 노드라면 멈춤
             if (curIndex == end)
@@ -146,25 +146,25 @@ public class MousePointToMove : MonoBehaviour
             int weight = curNode.FromStart + 10;
             // 위
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y),
-                curIndex, weight, in end, ref openList, in closedList))
+                curIndex, weight, in end, ref openList))
             {
                 diagonalBits |= (byte) ReachableCheckBits.Top;
             }
             // 아래
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X + 1, curIndex.Y),
-                curIndex, weight, in end, ref openList, in closedList))
+                curIndex, weight, in end, ref openList))
             {
                 diagonalBits |= (byte)ReachableCheckBits.Bottom;
             }
             //왼쪽
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X, curIndex.Y - 1),
-                curIndex, weight, in end, ref openList, in closedList))
+                curIndex, weight, in end, ref openList))
             {
                 diagonalBits |= (byte)ReachableCheckBits.Left;
             }
             //오른쪽
             if (!AddNodeToOpenList(new NodeIndex(curIndex.X, curIndex.Y + 1),
-                curIndex, weight, in end, ref openList, in closedList))
+                curIndex, weight, in end, ref openList))
             {
                 diagonalBits |= (byte)ReachableCheckBits.Right;
             }
@@ -174,22 +174,22 @@ public class MousePointToMove : MonoBehaviour
             if ((diagonalBits & (byte)ReachableCheckBits.LeftTop) == 0) // 왼쪽 위
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y - 1),
-                curIndex, weight, in end, ref openList, in closedList);
+                curIndex, weight, in end, ref openList);
             }
             if ((diagonalBits & (byte)ReachableCheckBits.RightTop) == 0) // 오른쪽 위
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X - 1, curIndex.Y + 1),
-                curIndex, weight, in end, ref openList, in closedList);
+                curIndex, weight, in end, ref openList);
             }
             if ((diagonalBits & (byte)ReachableCheckBits.LeftBottom) == 0) // 왼쪽 아래
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X + 1, curIndex.Y - 1),
-                curIndex, weight, in end, ref openList, in closedList);
+                curIndex, weight, in end, ref openList);
             }
             if ((diagonalBits & (byte)ReachableCheckBits.RightBottm) == 0) // 오른쪽 아래
             {
                 AddNodeToOpenList(new NodeIndex(curIndex.X + 1, curIndex.Y + 1),
-                curIndex, weight, in end, ref openList, in closedList);
+                curIndex, weight, in end, ref openList);
             }
 
             // 3. 현재 열린 목록에 있는 노드 중 Total cost가 가장 작은 노드를 다음 노드로 간다.
@@ -205,9 +205,8 @@ public class MousePointToMove : MonoBehaviour
         // 4. 닫힌 노드의 부모 노드를 추적하여 찾아간다.
         Route.Clear();
         string routeString = string.Empty;
-        NodeIndex nextNodeToMove = closedList[^1];
+        NodeIndex nextNodeToMove = lastClosedNode;
         do {
-
             Route.Push(nextNodeToMove);
             routeString += nextNodeToMove.ToString() + ">>";
             
@@ -223,7 +222,7 @@ public class MousePointToMove : MonoBehaviour
     }
 
     private bool AddNodeToOpenList(NodeIndex newNode, in NodeIndex parentNode, int weight, in NodeIndex endNode,
-        ref List<NodeIndex> openNode, in List<NodeIndex> closedNode)
+        ref List<NodeIndex> openNode)
     {
         // 인덱스 값이 이상함
         if(newNode.X < 0 || newNode.X >= width ||
